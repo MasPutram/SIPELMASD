@@ -30,7 +30,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://sipelmasd.vercel.app"
+  "https://sipelmasd-production.up.railway.app"
 ];
 
 app.use(cors({

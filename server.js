@@ -26,12 +26,29 @@ if (!fs.existsSync("uploads")) {
 connectDB();
 
 // 🌐 Middleware Global
+const cors = require("cors");
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://sipelmasd.vercel.app"
+];
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  origin: function (origin, callback) {
+    // Untuk request seperti curl atau Postman yang tidak punya origin
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS blocked: Origin not allowed"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
-  credentials: true,
+  credentials: true
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 

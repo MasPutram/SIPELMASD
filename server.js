@@ -26,12 +26,11 @@ if (!fs.existsSync("uploads")) {
 connectDB();
 
 // 🌐 Middleware Global
-const cors = require("cors");
-
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://sipelmasd-production.up.railway.app"
+  "https://sipelmasd-frontend-eosin.vercel.app" 
 ];
+
 
 app.use(cors({
   origin: function (origin, callback) {

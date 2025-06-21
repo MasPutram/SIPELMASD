@@ -28,25 +28,26 @@ connectDB();
 // 🌐 Middleware Global
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://sipelmasd.vercel.app"
+  "https://sipelmasd.vercel.app",
 ];
 
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Untuk request seperti curl atau Postman yang tidak punya origin
+      if (!origin) return callback(null, true);
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Untuk request seperti curl atau Postman yang tidak punya origin
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("CORS blocked: Origin not allowed"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
-  credentials: true
-}));
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("CORS blocked: Origin not allowed"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -59,13 +60,23 @@ app.use("/api/auth", authRoutes);
 app.use("/api/upload", uploadRoutes);
 
 // 🔮 GraphQL BEBAS CSRF (TARUH SEBELUM csrf middleware)
-app.use("/graphql", graphqlHTTP({
-  schema,
-  graphiql: true,
-}));
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
 
 // ✅ PASANG MIDDLEWARE CSRF
-const csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  },
+});
+
 app.use(csrfProtection);
 
 // 🧪 Endpoint untuk ambil CSRF Token

@@ -28,7 +28,7 @@ connectDB();
 // 🌐 Middleware Global
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://sipelmasd-frontend-eosin.vercel.app" 
+  "https://sipelmasd-frontend-pejptqlnf-masputrams-projects.vercel.app" 
 ];
 
 
